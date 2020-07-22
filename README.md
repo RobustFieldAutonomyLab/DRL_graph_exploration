@@ -2,7 +2,7 @@
 This repository contains code for robot exploration under uncertainty that uses graph neural networks (GNNs) in conjunction with deep reinforcement learning (DRL), enabling decision-making over graphs containing exploration information to predict a robot’s optimal sensing action in belief space. A demonstration video can be found [here](https://).
 
 <p align='center'>
-    <img src="/doc/graph_explo.png" alt="drawing" width="1200"/>
+    <img src="/doc/graph_explo.png" alt="drawing" width="1000"/>
 </p>
 
 ## Dependency
