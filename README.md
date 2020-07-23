@@ -5,9 +5,12 @@ This repository contains code for robot exploration under uncertainty that uses 
     <img src="/doc/exploration_graph.png" alt="drawing" width="1000"/>
 </p>
 
-<p float="left">
-  <img src="/doc/test40.gif" alt="drawing" width="500" />
-  <img src="/doc/test_larger.gif" alt="drawing" width="500" /> 
+<p align="center">
+  <img src="/doc/test40.gif" alt="drawing" width="800" />
+</p>
+
+<p align="center">
+  <img src="/doc/test_larger.gif" alt="drawing" width="800" /> 
 </p>
 
 ## Dependency
