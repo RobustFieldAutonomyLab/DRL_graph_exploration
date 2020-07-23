@@ -5,6 +5,8 @@ This repository contains code for robot exploration under uncertainty that uses 
     <img src="/doc/exploration_graph.png" alt="drawing" width="1000"/>
 </p>
 
+![](/doc/test40.gif) ![](/doc/test_larger.gif)
+
 ## Dependency
 - Python 3
 - [PyTorch](https://pytorch.org/)
@@ -37,7 +39,7 @@ make
 ```
 
 ## Issues
-There is a memory leak issue in the C++ code. So we use the python subprocess module to run the simulation training. The data in the process will be saved and reloaded every 10000 iterations.
+There is an unsolved memory leak issue in the C++ code. So we use the python subprocess module to run the simulation training. The data in the process will be saved and reloaded every 10000 iterations.
 
 ## How to Run?
 - To run saved policy:
