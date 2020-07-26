@@ -182,7 +182,6 @@ class ExplorationEnv(gym.Env):
         return self._sim._virtual_map.explored()
 
     def done(self):
-        # return self._done or self._sim.step > self._max_steps or self.status() > 0.63
         return self._done or self._sim.step > self._max_steps or self.status() > 0.85
 
     def get_landmark_error(self, sigma0=1.0):
@@ -203,7 +202,6 @@ class ExplorationEnv(gym.Env):
         return self._sim._slam.key_size()
 
     def print_graph(self):
-        # temp_sim = copy.deepcopy(self._sim)
         self._sim._slam.print_graph()
 
     def max_uncertainty_of_trajectory(self):
@@ -469,8 +467,6 @@ class ExplorationEnv(gym.Env):
         plt.plot(np.transpose(self._frontier)[0][index], np.transpose(self._frontier)[1][index], 'ro')
         plt.show()
         plt.pause(0.1)
-        # if self.status() > 0.75:
-        #     raw_input("Press Enter to continue...")
 
     def index2coor(self, matrix_i, matrix_j):
         x = (matrix_j + 0.5) * self.map_resolution + self._sim._map_params.min_x

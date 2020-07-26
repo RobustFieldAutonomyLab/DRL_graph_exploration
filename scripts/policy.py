@@ -14,8 +14,8 @@ import envs.exploration_env as robot
 
 
 class DeepQ(object):
-    def __init__(self, case_path):
-        # define the loacal file path
+    def __init__(self, case_path, model_name):
+        # define the local file path
         self.case_path = case_path
         self.weights_path = "../data/torch_weights/" + self.case_path
         self.reward_data_path = "../data/reward_data/" + self.case_path
@@ -36,7 +36,10 @@ class DeepQ(object):
         self.OBSERVE = 5e3  # 5e3
         self.EXPLORE = 1e6  # 5e5
         self.epoch = 1e4  # 1e4
-        self.TARGET_UPDATE = 30000
+        if model_name == "GCN":
+            self.TARGET_UPDATE = 15000
+        else:
+            self.TARGET_UPDATE = 9000
 
         # exploration and exploitation trad-off parameters
         # e-greedy trad-off
@@ -48,7 +51,7 @@ class DeepQ(object):
         self.map_size = 40
         # setup replay memory
         self.buffer = deque()
-        # setup trainingint
+        # setup training
         self.step_t = 0
         self.epsilon = self.INITIAL_EPSILON
         self.temp_loss = 0
@@ -60,7 +63,7 @@ class DeepQ(object):
         Test = test
         method = "bayesian"  # bayesian, e-greedy
         env = robot.ExplorationEnv(self.map_size, 0, Test)
-        device = torch.device('cuda')
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         policy_net = model
         target_net = modelTarget
         target_net.eval()
@@ -258,7 +261,7 @@ class DeepQ(object):
 
 class A2C(object):
     def __init__(self, case_path):
-        # define the loacal file path
+        # define the local file path
         self.case_path = case_path
         self.weights_path = "../data/torch_weights/" + self.case_path
         self.reward_data_path = "../data/reward_data/" + self.case_path
@@ -285,7 +288,7 @@ class A2C(object):
         self.buffer = deque()
         # setup environment parameters
         self.map_size = 40
-        # setup traininging
+        # setup training
         self.step_t = 0
         self.temp_loss = 0
         self.entro = 0
@@ -296,7 +299,7 @@ class A2C(object):
         temp_i = 0
         Test = test
         env = robot.ExplorationEnv(self.map_size, 0, Test)
-        device = torch.device('cuda')
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         policy_net = actor
         value_net = critic
         params = list(policy_net.parameters()) + list(value_net.parameters())
@@ -443,7 +446,7 @@ class A2C(object):
         x = torch.tensor(s_x, dtype=torch.float)
         edge_attr = torch.tensor(edge_attr, dtype=torch.float)
         state = Data(x=x, edge_index=edge_index, edge_attr=edge_attr)
-        batch = torch.zeros(np.shape(s_a)[0], dtype=int).cuda()
+        batch = torch.zeros(np.shape(s_a)[0], dtype=int).to(device)
         return state, batch
 
     def policy_cost(self, prob, advantages, action, mask):
@@ -473,15 +476,15 @@ class A2C(object):
         modelA.train()
         modelC.train()
         data = data.to(device)
-        mask = torch.tensor(mask, dtype=bool).cuda()
+        mask = torch.tensor(mask, dtype=bool).to(device)
         optimizer.zero_grad()
         actor_out = modelA(data, mask, batch=data.batch)
         critic_out = modelC(data, mask, batch=data.batch)
         eps = 1e-35
         actor_out = actor_out + eps
-        y_adv = torch.tensor(y_adv).cuda()
-        dis_reward = torch.tensor(dis_reward).cuda()
-        action = torch.tensor(action).cuda()
+        y_adv = torch.tensor(y_adv).to(device)
+        dis_reward = torch.tensor(dis_reward).to(device)
+        action = torch.tensor(action).to(device)
         actor_loss = self.policy_cost(actor_out, y_adv, action, mask)
         critic_loss = self.value_cost(critic_out, dis_reward)
         entropy_loss = self.entropy_loss(actor_out)
@@ -496,7 +499,7 @@ class A2C(object):
     def test(self, data, batch, mask, device, model):
         model.eval()
         data = data.to(device)
-        mask = torch.tensor(mask, dtype=bool).cuda()
+        mask = torch.tensor(mask, dtype=bool).to(device)
         pred = model(data, mask, batch)
         return pred
 
@@ -504,7 +507,7 @@ class A2C(object):
 if __name__ == "__main__":
     case_path = "test_case"
     training = A2C(case_path)
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     modela = Networks.PolicyGCN()
     modelc = Networks.ValueGCN()
     modela.to(device)

@@ -12,7 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torch_geometric.data import Data, DataLoader
 import Networks
 import envs.exploration_env as robot
-from policy_train import DeepQ, A2C
+from policy import DeepQ, A2C
 import subprocess
 
 # setup the training model and method
@@ -34,7 +34,7 @@ if training_method == "Q":
     target_model_name = object_path + 'Model_Target.pt'
     check_point_p = torch.load(policy_model_name)
     check_point_t = torch.load(target_model_name)
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         model = Networks.GCN()
         modelt = Networks.GCN()
@@ -56,7 +56,7 @@ elif training_method == "A2C":
     value_model_name = object_path + 'Model_Value.pt'
     check_point_p = torch.load(policy_model_name)
     check_point_v = torch.load(value_model_name)
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         modela = Networks.PolicyGCN()
         modelc = Networks.ValueGCN()

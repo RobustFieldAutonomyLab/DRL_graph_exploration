@@ -14,15 +14,14 @@ import Networks
 import envs.exploration_env as robot
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+
 mpl.rcParams['pdf.fonttype'] = 42
 
 # defind testing parameters
 eps_max = 5000
-map_size = 40
+map_size = 40  # 40, 60, 80, 100
 TEST = True
 PLOT = False
-use_landmarks = True
-large_map_test = False
 
 if map_size == 40:
     plot_max_step = 400
@@ -58,7 +57,7 @@ else:
 case_path = training_method + "_" + model_name + "/"
 weights_path = "../data/torch_weights/" + case_path
 policy_name = pt + "+" + pm
-figure_path = '../data/figures/visualization/'+str(map_size)+'_'+policy_name+'/'
+figure_path = '../data/figures/visualization/' + str(map_size) + '_' + policy_name + '/'
 
 # choose training method
 if training_method == "Q":
@@ -153,7 +152,7 @@ def generator(lo_name):
         policy_time = gcn_tt1 - gcn_tt0
 
         data_all = data_all.append({"Computation time": policy_time, "Category": policy_name, "Map size": map_size},
-                                     ignore_index=True)
+                                   ignore_index=True)
 
         # move to next view point
         for act in actions:
@@ -163,8 +162,8 @@ def generator(lo_name):
                 # plot environment
                 env.render(mode=mode)
                 env.show_frontier(action_index)
-                f1.set_size_inches((1+(map_size-40)/40)*6.4, (1+(map_size-40)/40)*4.8)
-                f1.savefig(figure_path+str(step_t)+'.png')
+                f1.set_size_inches((1 + (map_size - 40) / 40) * 6.4, (1 + (map_size - 40) / 40) * 4.8)
+                f1.savefig(figure_path + str(step_t) + '.png')
 
             step_t += 1
             l_error = env.get_landmark_error()
@@ -244,4 +243,5 @@ if __name__ == "__main__":
             data_output = pd.concat([data_output, exp_data])
     # output.to_csv("../data/test_result/data_m" + str(map_size) + "_" + case_path + ".csv", index=False)
     if not PLOT:
-        data_output.to_csv("../data/test_result/" + str(map_size) + "_" + training_method + "_" + model_name + ".csv", index=False)
+        data_output.to_csv("../data/test_result/" + str(map_size) + "_" + training_method + "_" + model_name + ".csv",
+                           index=False)

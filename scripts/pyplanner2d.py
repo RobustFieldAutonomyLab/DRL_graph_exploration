@@ -81,12 +81,6 @@ class EMExplorer(SS2D):
         return self._planner.simulations_reward(self._slam, self._virtual_map, self._sim, actions)
 
     def follow_dubins_path(self, steps=3):
-        # for edge in self._planner.iter_solution():
-        #     plot_virtual_map(edge.second.virtual_map)
-        #     plt.savefig('occ{}.png'.format(self.step))
-        #     plt.close()
-        #     break
-
         odoms = []
         for edge in self._planner.iter_solution():
             odoms.insert(0, edge.get_odoms())

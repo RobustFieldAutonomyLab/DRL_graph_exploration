@@ -10,7 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torch_geometric.data import Data, DataLoader
 import Networks
 import envs.exploration_env as robot
-from policy_train import DeepQ, A2C
+from policy import DeepQ, A2C
 import subprocess
 
 # setup the training model and method
@@ -40,7 +40,7 @@ writer = SummaryWriter(log_dir=log_path)
 # choose training method
 if training_method == "Q":
     # # create a training object
-    dgrl_training = DeepQ(case_path)
+    dgrl_training = DeepQ(case_path, model_name)
     # defind training parameters
     epoch_nums = dgrl_training.EXPLORE/dgrl_training.epoch
     # dump pickle file
@@ -50,7 +50,7 @@ if training_method == "Q":
     # load Q training model
     policy_model_name = object_path + 'Model_Policy.pt'
     target_model_name = object_path + 'Model_Target.pt'
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         model = Networks.GCN()
         modelt = Networks.GCN()
@@ -77,7 +77,7 @@ elif training_method == "A2C":
     # load training model
     policy_model_name = object_path + 'Model_Policy.pt'
     value_model_name = object_path + 'Model_Value.pt'
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         modela = Networks.PolicyGCN()
         modelc = Networks.ValueGCN()

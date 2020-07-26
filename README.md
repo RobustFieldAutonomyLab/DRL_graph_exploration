@@ -1,5 +1,5 @@
 # Autonomous Exploration Under Uncertainty via Deep Reinforcement Learning on Graphs
-This repository contains code for robot exploration under uncertainty that uses graph neural networks (GNNs) in conjunction with deep reinforcement learning (DRL), enabling decision-making over graphs containing exploration information to predict a robot’s optimal sensing action in belief space. A demonstration video can be found [here](https://).
+This repository contains code for robot exploration under uncertainty that uses graph neural networks (GNNs) in conjunction with deep reinforcement learning (DRL), enabling decision-making over graphs containing exploration information to predict a robot’s optimal sensing action in belief space. A demonstration video can be found [here](https://youtu.be/e7uM03hMZRo).
 
 <p align='center'>
     <img src="/doc/exploration_graph.png" alt="drawing" width="1000" />
@@ -33,7 +33,7 @@ This repository contains code for robot exploration under uncertainty that uses 
 ## Compile
 You can use the following commands to download and compile the package.
 ```
-git clone https://github.com/RobustFieldAutonomyLab/DRL_Graph_exploration.git
+git clone https://github.com/RobustFieldAutonomyLab/DRL_graph_exploration.git
 cd DRL_graph_exploration
 mkdir build && cd build
 cmake ..
