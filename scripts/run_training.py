@@ -28,7 +28,7 @@ with open(full_file_name, 'rb') as f:
     dgrl_training = pickle.load(f)
 
 # choose training method
-if training_method == "Q":
+if training_method == "DQN":
     # load training model
     policy_model_name = object_path + 'Model_Policy.pt'
     target_model_name = object_path + 'Model_Target.pt'
@@ -38,12 +38,12 @@ if training_method == "Q":
     if model_name == "GCN":
         model = Networks.GCN()
         modelt = Networks.GCN()
-    elif model_name == "GraphUNet":
+    elif model_name == "g-U-Net":
         model = Networks.GraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
         modelt = Networks.GraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
-    elif model_name == "GatedGCNet":
-        model = Networks.GatedGCNet()
-        modelt = Networks.GatedGCNet()
+    elif model_name == "GG-NN":
+        model = Networks.GGNN()
+        modelt = Networks.GGNN()
     model.load_state_dict(check_point_p)
     modelt.load_state_dict(check_point_t)
     model.to(device)
@@ -60,12 +60,12 @@ elif training_method == "A2C":
     if model_name == "GCN":
         modela = Networks.PolicyGCN()
         modelc = Networks.ValueGCN()
-    elif model_name == "GraphUNet":
+    elif model_name == "g-U-Net":
         modela = Networks.PolicyGraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
         modelc = Networks.ValueGraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
-    elif model_name == "GatedGCNet":
-        modela = Networks.PolicyGatedGCNet()
-        modelc = Networks.ValueGatedGCNet()
+    elif model_name == "GG-NN":
+        modela = Networks.PolicyGGNN()
+        modelc = Networks.ValueGGNN()
     modela.load_state_dict(check_point_p)
     modelc.load_state_dict(check_point_v)
     modela.to(device)

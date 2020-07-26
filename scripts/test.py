@@ -33,44 +33,34 @@ elif map_size == 100:
     plot_max_step = 4500
 
 # setup the training model and method
-training_method = "A2C"  # Q, A2C
+training_method = "A2C"  # DQN, A2C
 
 # Q:
-# GCN, GatedGCNet, GraphUNet
+# GCN, GG-NN, g-U-Net
 #
 # A2C:
-# GCN, GG-NN, GraphUNet
-model_name = "GatedGCNet"
-
-if training_method == "Q":
-    pt = "DQN"
-else:
-    pt = training_method
-
-if model_name == "GatedGCNet":
-    pm = "GG-NN"
-elif model_name == "GraphUNet":
-    pm = "g-U-Net"
-else:
-    pm = model_name
+# GCN, GG-NN, g-U-Net
+model_name = "GG-NN"
 
 case_path = training_method + "_" + model_name + "/"
 weights_path = "../data/torch_weights/" + case_path
-policy_name = pt + "+" + pm
+policy_name = training_method + "+" + model_name
 figure_path = '../data/figures/visualization/' + str(map_size) + '_' + policy_name + '/'
+if not os.path.exists(figure_path):
+    os.makedirs(figure_path)
 
 # choose training method
-if training_method == "Q":
+if training_method == "DQN":
     # load training model
     policy_model_name = weights_path + 'MyModel.pt'
     check_point_p = torch.load(policy_model_name)
     device = torch.device('cuda')
     if model_name == "GCN":
         model = Networks.GCN()
-    elif model_name == "GraphUNet":
+    elif model_name == "g-U-Net":
         model = Networks.GraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
-    elif model_name == "GatedGCNet":
-        model = Networks.GatedGCNet()
+    elif model_name == "GG-NN":
+        model = Networks.GGNN()
     model.load_state_dict(check_point_p)
     model.to(device)
 elif training_method == "A2C":
@@ -80,10 +70,10 @@ elif training_method == "A2C":
     device = torch.device('cuda')
     if model_name == "GCN":
         model = Networks.PolicyGCN()
-    elif model_name == "GraphUNet":
+    elif model_name == "g-U-Net":
         model = Networks.PolicyGraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
-    elif model_name == "GG-NN" or model_name == "GatedGCNet":
-        model = Networks.PolicyGatedGCNet()
+    elif model_name == "GG-NN":
+        model = Networks.PolicyGGNN()
     model.load_state_dict(check_point_p)
     model.to(device)
 
@@ -138,7 +128,7 @@ def generator(lo_name):
 
         # choose an action
         gcn_tt0 = time.time()
-        if training_method == "Q":
+        if training_method == "DQN":
             readout_t = test_q(s_t, 0, device, model).cpu().detach().numpy()
             action_index = np.argmax(readout_t[-fro_size:])
         elif training_method == "A2C":
@@ -160,8 +150,7 @@ def generator(lo_name):
 
             if PLOT:
                 # plot environment
-                env.render(mode=mode)
-                env.show_frontier(action_index)
+                env.render(mode=mode, action_index=action_index)
                 f1.set_size_inches((1 + (map_size - 40) / 40) * 6.4, (1 + (map_size - 40) / 40) * 4.8)
                 f1.savefig(figure_path + str(step_t) + '.png')
 

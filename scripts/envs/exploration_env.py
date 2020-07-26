@@ -106,10 +106,6 @@ class ExplorationEnv(gym.Env):
         if self._sim._planner_params.reg_out:
             action = self._action_set[action]
         u1 = self._get_utility()
-        if self._sim.sim_test([action.x, action.y, action.theta]):
-            # print "wrong"
-            return self._get_obs(), -1, self.done(), {}
-        # u2 = self._get_utility(None)
         self._sim.simulate([action.x, action.y, action.theta])
         self.dist = self.dist + math.sqrt(action.x ** 2 + action.y ** 2)
         u2 = self._get_utility(action)
@@ -298,86 +294,6 @@ class ExplorationEnv(gym.Env):
         global_features = np.array([avg_landmarks_error])
         return adjacency, features, global_features, fro_size
 
-    def graph_matrix_landmarks(self):
-        self.frontier()
-        trace_map = self._sim._virtual_map.to_cov_trace()
-        key_size = self._sim._slam.key_size()
-        land_size = self.get_landmark_size()
-        fro_size = 1
-
-        self._sim._slam.adjacency_degree_get()
-        adjacency = np.array(self._sim._slam.adjacency_out())
-        features = np.array(self._sim._slam.features_out())
-        adjacency = np.pad(adjacency, ((0, fro_size), (0, fro_size)), 'constant')
-        features = np.pad(features, ((0, fro_size), (0, 0)), 'constant')
-
-        robot_location = [self._sim.vehicle_position.x, self._sim.vehicle_position.y]
-
-        # add frontiers to adjacency matrix
-        fro_index = -1
-        for i in range(fro_size):
-            frontier_point = self._frontier[i]
-            for j in range(len(self._frontier_index[i])):
-                index_node = self._frontier_index[i][j]
-                if index_node == 0:
-                    self.nearest_frontier_point = 0+key_size
-                    fro_index = i
-                    dist = self.points2dist(frontier_point, robot_location)
-                    adjacency[key_size - 1][i + key_size] = dist
-                    adjacency[i + key_size][key_size - 1] = dist
-
-        # add frontiers to features matrix col 1: trace of cov
-        indx = self.coor2index(self._frontier[fro_index][0], self._frontier[fro_index][1])
-        f = trace_map[indx[0]][indx[1]]
-        features[key_size][0] = f
-
-        # add frontiers to features matrix col 2: distance to the robot
-        features_2 = np.zeros(np.shape(features))
-        for i in range(key_size):
-            key_point = self._sim._slam.get_key_points(i)
-            dist = self.points2dist(key_point, robot_location)
-            features_2[i][0] = dist
-        frontier_point = self._frontier[fro_index]
-        dist = self.points2dist(frontier_point, robot_location)
-        features_2[key_size][0] = dist
-
-        # add frontiers to features matrix col 5: direction to the robot
-        features_5 = np.zeros(np.shape(features))
-        root_theta = self._sim.vehicle_position.theta
-        for i in range(key_size):
-            key_point = self._sim._slam.get_key_points(i)
-            tdiff = self.diff_theta(key_point, robot_location, root_theta)
-            features_5[i][0] = tdiff
-        frontier_point = self._frontier[fro_index]
-        tdiff = self.diff_theta(frontier_point, robot_location, root_theta)
-        features_5[key_size][0] = tdiff
-
-        # add frontiers to features matrix col 3: probobility
-        features_3 = np.zeros(np.shape(features))
-        for i in range(key_size):
-            key_point = self._sim._slam.get_key_points(i)
-            indx = self.coor2index(key_point[0], key_point[1])
-            probobility = self._obs[indx[0]][indx[1]]
-            features_3[i][0] = probobility
-        frontier_point = self._frontier[fro_index]
-        indx = self.coor2index(frontier_point[0], frontier_point[1])
-        probobility = self._obs[indx[0]][indx[1]]
-        features_3[key_size][0] = probobility
-
-        # add frontiers to features matrix clo 4: index of locations
-        features_4 = np.zeros(np.shape(features))
-        for i in range(key_size - 1):
-            features_4[i][0] = -1
-        features_4[key_size - 1][0] = 0
-        features_4[key_size][0] = 1
-
-        features = np.concatenate((features, features_2, features_5, features_3, features_4), axis=1)
-
-        # create global features
-        avg_landmarks_error = np.mean(features[1:land_size + 1][:, 0])
-        global_features = np.array([avg_landmarks_error])
-        return adjacency, features, global_features, 1, land_size
-
     def is_nf(self, id):
         if self.nearest_frontier_point == id:
             return True
@@ -445,13 +361,6 @@ class ExplorationEnv(gym.Env):
                         not_go.append(i + j)
             self._frontier_index.append(temp_list)
 
-        # plt.plot(np.transpose(all_frontiers)[0], np.transpose(all_frontiers)[1],'bo')
-        # plt.plot(np.transpose(self._frontier)[0], np.transpose(self._frontier)[1],'mo')
-        # plt.show()
-        # plt.pause(0.1)
-        # if self.status() > 0.6:
-        #     raw_input("Press Enter to continue...")
-
     def nearest_frontier(self, point, all_frontiers):
         min_dist = float("Inf")
         min_index = None
@@ -465,8 +374,8 @@ class ExplorationEnv(gym.Env):
     def show_frontier(self, index):
         plt.plot(np.transpose(self._frontier)[0], np.transpose(self._frontier)[1], 'mo')
         plt.plot(np.transpose(self._frontier)[0][index], np.transpose(self._frontier)[1][index], 'ro')
-        plt.show()
-        plt.pause(0.1)
+        # plt.show()
+        # plt.pause(0.1)
 
     def index2coor(self, matrix_i, matrix_j):
         x = (matrix_j + 0.5) * self.map_resolution + self._sim._map_params.min_x
@@ -528,7 +437,7 @@ class ExplorationEnv(gym.Env):
             # Return initial observation
             return self._get_obs()
 
-    def render(self, mode='human', close=False):
+    def render(self, mode='human', close=False, action_index=-1):
         if close:
             return
         if mode == 'human':
@@ -547,6 +456,8 @@ class ExplorationEnv(gym.Env):
                 plt.xlim((self._sim._map_params.min_x + 14, self._sim._map_params.max_x - 14))
                 plt.ylim((self._sim._map_params.min_y + 14, self._sim._map_params.max_y - 14))
                 plt.draw()
+            if action_index != -1:
+                self.show_frontier(action_index)
             plt.pause(ExplorationEnv.metadata['render.pause'])
         elif mode == 'state':
             # print self._obs
@@ -619,7 +530,7 @@ if __name__ == '__main__':
         for a in actions:
             obs, reward, done, _ = env.step(a)
             temp_reward += reward
-            env.render(mode=mode)
+            env.render(mode=mode, action_index=act_index-key_size)
             print("step: ", str(t), "reward: ", str(reward))
 
             # print "landmark error: ", env.get_landmark_error()

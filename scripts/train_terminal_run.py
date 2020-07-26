@@ -14,15 +14,15 @@ from policy import DeepQ, A2C
 import subprocess
 
 # setup the training model and method
-training_method = "Q"  # Q, A2C
+training_method = "DQN"  # DQN, A2C
 
 # Q:
-# GCN, GatedGCNet, GraphUNet
+# GCN, GG-NN, g-U-Net
 #
 # A2C:
 # GCN{PolicyGCN, ValueGCN},
-# GatedGCNet{PolicyGatedGCNet, ValueGatedGCNet},
-# GraphUNet{PolicyGraphUNet, ValueGraphUNet}
+# GG-NN{PolicyGatedGCNet, ValueGatedGCNet},
+# g-U-Net{PolicyGraphUNet, ValueGraphUNet}
 model_name = "GCN"
 
 # setup local file paths
@@ -38,7 +38,7 @@ if not os.path.exists(object_path):
 writer = SummaryWriter(log_dir=log_path)
 
 # choose training method
-if training_method == "Q":
+if training_method == "DQN":
     # # create a training object
     dgrl_training = DeepQ(case_path, model_name)
     # defind training parameters
@@ -54,12 +54,12 @@ if training_method == "Q":
     if model_name == "GCN":
         model = Networks.GCN()
         modelt = Networks.GCN()
-    elif model_name == "GraphUNet":
+    elif model_name == "g-U-Net":
         model = Networks.GraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
         modelt = Networks.GraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
-    elif model_name == "GatedGCNet":
-        model = Networks.GatedGCNet()
-        modelt = Networks.GatedGCNet()
+    elif model_name == "GG-NN":
+        model = Networks.GGNN()
+        modelt = Networks.GGNN()
     model.to(device)
     modelt.to(device)
     torch.save(model.state_dict(), policy_model_name)
@@ -81,12 +81,12 @@ elif training_method == "A2C":
     if model_name == "GCN":
         modela = Networks.PolicyGCN()
         modelc = Networks.ValueGCN()
-    elif model_name == "GraphUNet":
+    elif model_name == "g-U-Net":
         modela = Networks.PolicyGraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
         modelc = Networks.ValueGraphUNet(in_channels=5, hidden_channels=1000, out_channels=1000, depth=3)
-    elif model_name == "GatedGCNet":
-        modela = Networks.PolicyGatedGCNet()
-        modelc = Networks.ValueGatedGCNet()
+    elif model_name == "GG-NN":
+        modela = Networks.PolicyGGNN()
+        modelc = Networks.ValueGGNN()
     modela.to(device)
     modelc.to(device)
     torch.save(modela.state_dict(), policy_model_name)

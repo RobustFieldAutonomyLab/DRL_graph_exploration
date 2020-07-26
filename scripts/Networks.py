@@ -70,9 +70,9 @@ class ValueGCN(torch.nn.Module):
         return x
 
 
-class GatedGCNet(torch.nn.Module):
+class GGNN(torch.nn.Module):
     def __init__(self):
-        super(GatedGCNet, self).__init__()
+        super(GGNN, self).__init__()
         self.gconv1 = GatedGraphConv(1000, 3)
         self.fully_con1 = torch.nn.Linear(1000, 1)
 
@@ -86,9 +86,9 @@ class GatedGCNet(torch.nn.Module):
         return x
 
 
-class PolicyGatedGCNet(torch.nn.Module):
+class PolicyGGNN(torch.nn.Module):
     def __init__(self):
-        super(PolicyGatedGCNet, self).__init__()
+        super(PolicyGGNN, self).__init__()
         self.gconv1 = GatedGraphConv(1000, 3)
         self.fully_con1 = torch.nn.Linear(1000, 1)
 
@@ -105,9 +105,9 @@ class PolicyGatedGCNet(torch.nn.Module):
         return x
 
 
-class ValueGatedGCNet(torch.nn.Module):
+class ValueGGNN(torch.nn.Module):
     def __init__(self):
-        super(ValueGatedGCNet, self).__init__()
+        super(ValueGGNN, self).__init__()
         self.gconv1 = GatedGraphConv(1000, 3)
         self.fully_con1 = torch.nn.Linear(1000, 100)
 
