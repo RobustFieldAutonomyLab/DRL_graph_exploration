@@ -24,13 +24,7 @@ elif map_size == 100:
 
 # setup the training model and method
 training_method = "A2C"  # DQN, A2C
-
-# Q:
-# GCN, GG-NN, g-U-Net
-#
-# A2C:
-# GCN, GG-NN, g-U-Net
-model_name = "GG-NN"
+model_name = "GG-NN"  # GCN, GG-NN, g-U-Net
 
 case_path = training_method + "_" + model_name + "/"
 weights_path = "../data/torch_weights/" + case_path

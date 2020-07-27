@@ -13,8 +13,8 @@ import matplotlib as mpl
 mpl.rcParams['pdf.fonttype'] = 42
 
 try:
-    from pyplanner2d import EMExplorer
-    from utils import load_config, plot_virtual_map, plot_virtual_map_cov, plot_path
+    from envs.pyplanner2d import EMExplorer
+    from envs.utils import load_config, plot_virtual_map, plot_virtual_map_cov, plot_path
 except ImportError as e:
     raise error.DependencyNotInstalled('{}. Build em_exploration and export PYTHONPATH=build_dir'.format(e))
 
@@ -25,12 +25,12 @@ class ExplorationEnv(gym.Env):
 
     def __init__(self,
                  map_size,
-                 lo,
+                 env_index,
                  test):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         config = dir_path + '/exploration_env.ini'
         self._config = load_config(config)
-        self.lo = lo
+        self.env_index = env_index
         self.map_size = map_size
         self.dist = 0.0
         self.test = test
@@ -102,12 +102,6 @@ class ExplorationEnv(gym.Env):
         self._sim.simulate([action.x, action.y, action.theta])
         self.dist = self.dist + math.sqrt(action.x ** 2 + action.y ** 2)
         u2 = self._get_utility(action)
-        return self._get_obs(), self.done(), {}
-
-    def initial_step(self, theta):
-        self._sim.simulate(np.array([self._step_length * math.cos(theta),
-                                     self._step_length * math.sin(theta),
-                                     theta]))
         return self._get_obs(), self.done(), {}
 
     def plan(self):
@@ -195,7 +189,6 @@ class ExplorationEnv(gym.Env):
 
     def max_uncertainty_of_trajectory(self):
         land_size = self.get_landmark_size()
-
         self._sim._slam.adjacency_degree_get()
         features = np.array(self._sim._slam.features_out())
         return np.amax(features[land_size:])
@@ -367,8 +360,6 @@ class ExplorationEnv(gym.Env):
     def show_frontier(self, index):
         plt.plot(np.transpose(self._frontier)[0], np.transpose(self._frontier)[1], 'mo')
         plt.plot(np.transpose(self._frontier)[0][index], np.transpose(self._frontier)[1][index], 'ro')
-        # plt.show()
-        # plt.pause(0.1)
 
     def index2coor(self, matrix_i, matrix_j):
         x = (matrix_j + 0.5) * self.map_resolution + self._sim._map_params.min_x
@@ -403,8 +394,8 @@ class ExplorationEnv(gym.Env):
                 seed1 = self.np_random.randint(0, np.iinfo(np.int32).max, dtype=np.int32)
                 seed2 = self.np_random.randint(0, np.iinfo(np.int32).max, dtype=np.int32)
             else:
-                seed1 = self.lo
-                seed2 = self.lo
+                seed1 = self.env_index
+                seed2 = self.env_index
             landmark_size = int(self.map_size ** 2 * 0.005)
             self._config.set('Simulator', 'seed', str(seed1))
             self._config.set('Planner', 'seed', str(seed1))
@@ -424,7 +415,7 @@ class ExplorationEnv(gym.Env):
 
             if self._sim._slam.map.get_landmark_size() < 1:
                 print("regenerate a environment")
-                self.lo = self.lo + 50
+                self.env_index = self.env_index + 50
                 continue
 
             # Return initial observation

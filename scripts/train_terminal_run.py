@@ -9,15 +9,7 @@ import subprocess
 
 # setup the training model and method
 training_method = "DQN"  # DQN, A2C
-
-# Q:
-# GCN, GG-NN, g-U-Net
-#
-# A2C:
-# GCN{PolicyGCN, ValueGCN},
-# GG-NN{PolicyGGNN, ValueGGNN},
-# g-U-Net{PolicyGraphUNet, ValueGraphUNet}
-model_name = "GCN"
+model_name = "GCN"  # GCN, GG-NN, g-U-Net
 
 # setup local file paths
 case_path = training_method + "_" + model_name + "/"

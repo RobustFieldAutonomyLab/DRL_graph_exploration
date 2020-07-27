@@ -1,8 +1,8 @@
 from configparser import SafeConfigParser
 import math
 import numpy as np
-from pyss2d import *
-from utils import *
+from envs.pyss2d import *
+from envs.utils import *
 import build.planner2d as planner2d
 
 

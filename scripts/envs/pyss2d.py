@@ -3,7 +3,7 @@ import math
 from configparser import ConfigParser
 import numpy as np
 from scipy.stats.distributions import chi2
-from utils import *
+from envs.utils import *
 import build.ss2d as ss2d
 
 
