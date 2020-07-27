@@ -15,10 +15,9 @@ import envs.exploration_env as robot
 import matplotlib.pyplot as plt
 
 # defind testing parameters
-eps_max = 5000
 map_size = 40  # 40, 60, 80, 100
 TEST = True
-PLOT = False
+PLOT = True
 
 if map_size == 40:
     plot_max_step = 400
@@ -42,16 +41,13 @@ model_name = "GG-NN"
 case_path = training_method + "_" + model_name + "/"
 weights_path = "../data/torch_weights/" + case_path
 policy_name = training_method + "+" + model_name
-figure_path = '../data/figures/visualization/' + str(map_size) + '_' + policy_name + '/'
-if not os.path.exists(figure_path):
-    os.makedirs(figure_path)
 
 # choose training method
 if training_method == "DQN":
     # load training model
     policy_model_name = weights_path + 'MyModel.pt'
     check_point_p = torch.load(policy_model_name)
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         model = Networks.GCN()
     elif model_name == "g-U-Net":
@@ -64,7 +60,7 @@ elif training_method == "A2C":
     # load training model
     policy_model_name = weights_path + 'MyModel.pt'
     check_point_p = torch.load(policy_model_name)
-    device = torch.device('cuda')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         model = Networks.PolicyGCN()
     elif model_name == "g-U-Net":
@@ -103,8 +99,7 @@ def generator(lo_name):
 
     if PLOT:
         f1 = plt.figure(1)
-        if not os.path.exists(figure_path):
-            os.makedirs(figure_path)
+        f1.set_size_inches((1 + (map_size - 40) / 40) * 6.4, (1 + (map_size - 40) / 40) * 4.8)
         # plot environment
         env.render(mode=mode)
 
@@ -138,8 +133,9 @@ def generator(lo_name):
 
         policy_time = gcn_tt1 - gcn_tt0
 
-        data_all = data_all.append({"Computation time": policy_time, "Category": policy_name, "Map size": map_size},
-                                   ignore_index=True)
+        if not PLOT:
+            data_all = data_all.append({"Computation time": policy_time, "Category": policy_name, "Map size": map_size},
+                                       ignore_index=True)
 
         # move to next view point
         for act in actions:
@@ -148,33 +144,29 @@ def generator(lo_name):
             if PLOT:
                 # plot environment
                 env.render(mode=mode, action_index=action_index)
-                f1.set_size_inches((1 + (map_size - 40) / 40) * 6.4, (1 + (map_size - 40) / 40) * 4.8)
-                f1.savefig(figure_path + str(step_t) + '.png')
 
             step_t += 1
             l_error = env.get_landmark_error()
             entro = map_entropy(obs)
             max_traj_error = env.max_uncertainty_of_trajectory()
-            data_all = data_all.append(
-                {"Step": step_t, "Category": policy_name, "Map entropy": entro, "Landmarks error": l_error,
-                 "Max localization uncertainty": max_traj_error}, ignore_index=True)
+            if not PLOT:
+                data_all = data_all.append(
+                    {"Step": step_t, "Category": policy_name, "Map entropy": entro, "Landmarks error": l_error,
+                     "Max localization uncertainty": max_traj_error}, ignore_index=True)
             print('step: ', step_t, 'action: ', act, 'done: ', done, 'explored: ', env.status())
 
             if done:
                 while step_t < plot_max_step:
                     step_t = step_t + 1
-                    data_all = data_all.append(
-                        {"Step": step_t, "Category": policy_name, "Map entropy": entro, "Landmarks error": l_error,
-                         "Max localization uncertainty": max_traj_error}, ignore_index=True)
+                    if not PLOT:
+                        data_all = data_all.append(
+                            {"Step": step_t, "Category": policy_name, "Map entropy": entro, "Landmarks error": l_error,
+                             "Max localization uncertainty": max_traj_error}, ignore_index=True)
                 break
 
         if done:
-            # error_gcn = env.get_landmark_error()
-            # dist_gcn = env.get_dist()
             del env
             gc.collect()
-            if PLOT:
-                plt.waitforbuttonpress()
 
     return data_all
 
@@ -227,7 +219,6 @@ if __name__ == "__main__":
         exp_data = generator(i)
         if not PLOT:
             data_output = pd.concat([data_output, exp_data])
-    # output.to_csv("../data/test_result/data_m" + str(map_size) + "_" + case_path + ".csv", index=False)
     if not PLOT:
         data_output.to_csv("../data/test_result/" + str(map_size) + "_" + training_method + "_" + model_name + ".csv",
                            index=False)
