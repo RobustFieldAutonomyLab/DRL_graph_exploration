@@ -63,7 +63,7 @@ There is an unsolved memory leak issue in the C++ code. So we use the python sub
 
 ## Cite
 
-Please cite [our paper]() if you use any of this code: 
+Please cite [our paper](https://arxiv.org/abs/2007.12640) if you use any of this code: 
 ```
 @inproceedings{ExplorGraphDRL2020,
   title={Autonomous Exploration Under Uncertainty via Deep Reinforcement Learning on Graphs},
