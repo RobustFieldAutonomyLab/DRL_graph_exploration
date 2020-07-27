@@ -49,17 +49,17 @@ There is an unsolved memory leak issue in the C++ code. So we use the python sub
     cd DRL_graph_exploration/scripts
     python3 test.py
     ```
+- To show average reward during the training:
+    ```
+    cd DRL_graph_exploration/data
+    tensorboard --logdir=torch_logs
+    ```
 - To train your own policy:
     ```
     cd DRL_graph_exploration/scripts
     python3 train.py
     ```
  
-- To show average reward during the training:
-    ```
-    cd DRL_graph_exploration/data
-    tensorboard --logdir=torch_logs
-    ```
 
 ## Cite
 
