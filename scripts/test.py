@@ -13,15 +13,6 @@ map_size = 40  # 40, 60, 80, 100
 TEST = True
 PLOT = True  # save testing date if False; only visualize the environment if True
 
-if map_size == 40:
-    plot_max_step = 400
-elif map_size == 60:
-    plot_max_step = 1200
-elif map_size == 80:
-    plot_max_step = 2400
-elif map_size == 100:
-    plot_max_step = 4500
-
 # setup the training model and method
 training_method = "A2C"  # DQN, A2C
 model_name = "GG-NN"  # GCN, GG-NN, g-U-Net
@@ -30,6 +21,15 @@ case_path = training_method + "_" + model_name + "/"
 weights_path = "../data/torch_weights/" + case_path
 policy_name = training_method + "+" + model_name
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+if map_size == 40:
+    plot_max_step = 400
+elif map_size == 60:
+    plot_max_step = 1200
+elif map_size == 80:
+    plot_max_step = 2400
+elif map_size == 100:
+    plot_max_step = 4500
 
 # choose training method
 if training_method == "DQN":
