@@ -52,7 +52,7 @@ There is an unsolved memory leak issue in the C++ code. So we use the python sub
 - To train your own policy:
     ```
     cd DRL_graph_exploration/scripts
-    python3 train_terminal_run.py
+    python3 train.py
     ```
  
 - To show average reward during the training:
