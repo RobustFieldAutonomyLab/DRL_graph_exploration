@@ -1,23 +1,17 @@
-import sys
 import numpy as np
-import os
 import time
 import gc
-import pickle
 import pandas as pd
-import multiprocessing
 import torch
-import torch.nn.functional as F
-from torch.utils.tensorboard import SummaryWriter
 from torch_geometric.data import Data, DataLoader
 import Networks
 import envs.exploration_env as robot
 import matplotlib.pyplot as plt
 
-# defind testing parameters
+# define testing parameters
 map_size = 40  # 40, 60, 80, 100
 TEST = True
-PLOT = True
+PLOT = True  # save testing date if False; only visualize the environment if True
 
 if map_size == 40:
     plot_max_step = 400
@@ -41,13 +35,13 @@ model_name = "GG-NN"
 case_path = training_method + "_" + model_name + "/"
 weights_path = "../data/torch_weights/" + case_path
 policy_name = training_method + "+" + model_name
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # choose training method
 if training_method == "DQN":
     # load training model
     policy_model_name = weights_path + 'MyModel.pt'
     check_point_p = torch.load(policy_model_name)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         model = Networks.GCN()
     elif model_name == "g-U-Net":
@@ -60,7 +54,6 @@ elif training_method == "A2C":
     # load training model
     policy_model_name = weights_path + 'MyModel.pt'
     check_point_p = torch.load(policy_model_name)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if model_name == "GCN":
         model = Networks.PolicyGCN()
     elif model_name == "g-U-Net":
@@ -111,7 +104,7 @@ def generator(lo_name):
         adjacency, featrues, globals_features, fro_size = env.graph_matrix()
         node_size = adjacency.shape[0]
         key_size = node_size - fro_size
-        s_t, b_t = data_process([adjacency, featrues])
+        s_t, b_t = data_process([adjacency, featrues], device)
         mask = np.zeros([node_size])
         mask[-fro_size:] = 1
 
@@ -139,7 +132,7 @@ def generator(lo_name):
 
         # move to next view point
         for act in actions:
-            obs, reward, done, _ = env.step(act)
+            obs, done, _ = env.step(act)
 
             if PLOT:
                 # plot environment
@@ -171,7 +164,7 @@ def generator(lo_name):
     return data_all
 
 
-def data_process(data):
+def data_process(data, device):
     s_a, s_x = data
     edge_index = []
     edge_attr = []
@@ -192,7 +185,7 @@ def data_process(data):
     x = torch.tensor(s_x, dtype=torch.float)
     edge_attr = torch.tensor(edge_attr, dtype=torch.float)
     state = Data(x=x, edge_index=edge_index, edge_attr=edge_attr)
-    batch = torch.zeros(np.shape(s_a)[0], dtype=int).cuda()
+    batch = torch.zeros(np.shape(s_a)[0], dtype=int).to(device)
     return state, batch
 
 

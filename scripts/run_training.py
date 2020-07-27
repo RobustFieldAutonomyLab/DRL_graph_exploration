@@ -1,19 +1,7 @@
-import numpy as np
-import os
 import pickle
 import sys
-from collections import deque
-import gc
-import random
-import pandas as pd
 import torch
-import torch.nn.functional as F
-from torch.utils.tensorboard import SummaryWriter
-from torch_geometric.data import Data, DataLoader
 import Networks
-import envs.exploration_env as robot
-from policy import DeepQ, A2C
-import subprocess
 
 # setup the training model and method
 training_method = sys.argv[1]

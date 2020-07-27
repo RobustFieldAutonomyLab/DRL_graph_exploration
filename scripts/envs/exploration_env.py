@@ -95,13 +95,6 @@ class ExplorationEnv(gym.Env):
             distance = math.sqrt(action.x ** 2 + action.y ** 2 + angle_weight * action.theta ** 2)
         return self._sim.calculate_utility(distance)
 
-    def test_step(self, action):
-        if self._sim._planner_params.reg_out:
-            action = self._action_set[action]
-        return self._sim.sim_test(np.array([action.x,
-                                            action.y,
-                                            action.theta]))
-
     def step(self, action):
         if self._sim._planner_params.reg_out:
             action = self._action_set[action]
@@ -109,13 +102,13 @@ class ExplorationEnv(gym.Env):
         self._sim.simulate([action.x, action.y, action.theta])
         self.dist = self.dist + math.sqrt(action.x ** 2 + action.y ** 2)
         u2 = self._get_utility(action)
-        return self._get_obs(), u1 - u2, self.done(), {}
+        return self._get_obs(), self.done(), {}
 
     def initial_step(self, theta):
         self._sim.simulate(np.array([self._step_length * math.cos(theta),
                                      self._step_length * math.sin(theta),
                                      theta]))
-        return self._get_obs(), 0, self.done(), {}
+        return self._get_obs(), self.done(), {}
 
     def plan(self):
         if not self._sim.plan():

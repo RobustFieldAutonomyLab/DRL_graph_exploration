@@ -1,15 +1,9 @@
 import numpy as np
 import os
 import pickle
-from collections import deque
-import gc
-import random
 import torch
-import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
-from torch_geometric.data import Data, DataLoader
 import Networks
-import envs.exploration_env as robot
 from policy import DeepQ, A2C
 import subprocess
 
@@ -21,7 +15,7 @@ training_method = "DQN"  # DQN, A2C
 #
 # A2C:
 # GCN{PolicyGCN, ValueGCN},
-# GG-NN{PolicyGatedGCNet, ValueGatedGCNet},
+# GG-NN{PolicyGGNN, ValueGGNN},
 # g-U-Net{PolicyGraphUNet, ValueGraphUNet}
 model_name = "GCN"
 
@@ -41,7 +35,7 @@ writer = SummaryWriter(log_dir=log_path)
 if training_method == "DQN":
     # # create a training object
     dgrl_training = DeepQ(case_path, model_name)
-    # defind training parameters
+    # define training parameters
     epoch_nums = dgrl_training.EXPLORE/dgrl_training.epoch
     # dump pickle file
     full_file_name = object_path + 'saved_training.pkl'
@@ -68,7 +62,7 @@ if training_method == "DQN":
 elif training_method == "A2C":
     # create a training object
     dgrl_training = A2C(case_path)
-    # defind training parameters
+    # define training parameters
     epoch_nums = dgrl_training.EXPLORE/dgrl_training.epoch
     # dump pickle file
     full_file_name = object_path + 'saved_training.pkl'

@@ -117,7 +117,7 @@ class DeepQ(object):
 
             # move to next view point
             for act in actions:
-                _, reward, done, _ = env.step(act)
+                _, done, _ = env.step(act)
 
             # terminal for Q networks
             # cur_ter = env.loop_clo and r_t == 1
@@ -314,7 +314,7 @@ class A2C(object):
             adjacency, featrues, globals_features, fro_size = env.graph_matrix()
             node_size = adjacency.shape[0]
             key_size = node_size - fro_size
-            s_t, b_t = self.data_process([adjacency, featrues])
+            s_t, b_t = self.data_process([adjacency, featrues], device)
             mask = np.zeros([node_size])
             mask[-fro_size:] = 1
 
@@ -340,14 +340,14 @@ class A2C(object):
 
             # move to the next view point
             for act in actions:
-                _, reward, done, _ = env.step(act)
+                _, done, _ = env.step(act)
 
             # terminal for RL value calculation
             current_done = done or env.loop_clo
 
             # get next state
             adjacency, featrues, globals_features, fro_size1 = env.graph_matrix()
-            s_t1, b_t1 = self.data_process([adjacency, featrues])
+            s_t1, b_t1 = self.data_process([adjacency, featrues], device)
             mask = np.zeros([adjacency.shape[0]])
             mask[-fro_size1:] = 1
 
@@ -425,7 +425,7 @@ class A2C(object):
         torch.save(policy_net.state_dict(), self.object_path + 'Model_Policy.pt')
         torch.save(value_net.state_dict(), self.object_path + 'Model_Value.pt')
 
-    def data_process(self, data):
+    def data_process(self, data, device):
         s_a, s_x = data
         edge_index = []
         edge_attr = []
