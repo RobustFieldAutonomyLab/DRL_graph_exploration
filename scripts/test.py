@@ -13,9 +13,6 @@ from torch_geometric.data import Data, DataLoader
 import Networks
 import envs.exploration_env as robot
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-
-mpl.rcParams['pdf.fonttype'] = 42
 
 # defind testing parameters
 eps_max = 5000
@@ -96,7 +93,7 @@ def map_entropy(obs):
 
 def generator(lo_name):
     lo = lo_name
-    print("This is the ", str(lo), " example")
+    print("This is example ", str(lo))
     data_all = pd.DataFrame()
 
     # //////////////////////////////////////////////////////////////////////////////

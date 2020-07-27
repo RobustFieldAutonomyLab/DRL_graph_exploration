@@ -68,7 +68,7 @@ Please cite [our paper]() if you use any of this code:
 @inproceedings{ExplorGraphDRL2020,
   title={Autonomous Exploration Under Uncertainty via Deep Reinforcement Learning on Graphs},
   author={Chen, Fanfei and Martin, John D. and Huang, Yewei and Wang, Jinkun and Englot, Brendan},
-  booktitle={},
+  booktitle={IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
   year={2020},
 }
 ```
