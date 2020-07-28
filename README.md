@@ -44,12 +44,12 @@ make
 There is an unsolved memory leak issue in the C++ code. So we use the python subprocess module to run the simulation training. The data in the process will be saved and reloaded every 10000 iterations.
 
 ## How to Run?
-- To run saved policy:
+- To run the saved policy:
     ```
     cd DRL_graph_exploration/scripts
     python3 test.py
     ```
-- To show average reward during the training:
+- To show the average reward during the training:
     ```
     cd DRL_graph_exploration/data
     tensorboard --logdir=torch_logs
