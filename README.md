@@ -65,7 +65,7 @@ There is an unsolved memory leak issue in the C++ code. So we use the python sub
 
 Please cite [our paper](http://ras.papercept.net/images/temp/IROS/files/0778.pdf) if you use any of this code: 
 ```
-@inproceedings{ExplorGraphDRL2020,
+@inproceedings{chen2020autonomous,
   title={Autonomous Exploration Under Uncertainty via Deep Reinforcement Learning on Graphs},
   author={Chen, Fanfei and Martin, John D. and Huang, Yewei and Wang, Jinkun and Englot, Brendan},
   booktitle={IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
