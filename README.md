@@ -68,8 +68,10 @@ Please cite [our paper](http://ras.papercept.net/images/temp/IROS/files/0778.pdf
 @inproceedings{chen2020autonomous,
   title={Autonomous Exploration Under Uncertainty via Deep Reinforcement Learning on Graphs},
   author={Chen, Fanfei and Martin, John D. and Huang, Yewei and Wang, Jinkun and Englot, Brendan},
-  booktitle={IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  booktitle={2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  pages={6140--6147},
   year={2020},
+  organization={IEEE}
 }
 ```
 
