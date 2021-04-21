@@ -143,7 +143,7 @@ def plot_virtual_map(virtual_map, map_params, ax=None, virtual_landmarks=True, a
         ax = plt.gca()
 
     array = virtual_map.to_array()
-    ax.imshow(array, origin='low left', alpha=alpha, cmap='bone_r', vmin=0.0, vmax=1.0,
+    ax.imshow(array, origin='lower', alpha=alpha, cmap='bone_r', vmin=0.0, vmax=1.0,
               extent=[map_params.min_x, map_params.max_x,
                       map_params.min_y, map_params.max_y])
 
@@ -157,7 +157,7 @@ def plot_virtual_map_cov(cov_array, max_sigma, map_params, ax=None, alpha=1.0):
     if ax is None:
         ax = plt.gca()
 
-    ax.imshow(cov_array[0], origin='low left', alpha=alpha, cmap='bone_r',
+    ax.imshow(cov_array[0], origin='lower', alpha=alpha, cmap='bone_r',
               vmin=-0.2*max_sigma, vmax=max_sigma+0.2*max_sigma,
               extent=[map_params.min_x, map_params.max_x,
                       map_params.min_y, map_params.max_y])

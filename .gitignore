@@ -1,0 +1,31 @@
+# Ignore folders
+.idea/
+cmake-build-debug/
+devel/
+build/
+bin/
+lib/
+log/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# ignore files
+.catkin_workspace

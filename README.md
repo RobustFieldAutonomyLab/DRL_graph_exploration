@@ -40,6 +40,10 @@ cmake ..
 make
 ```
 
+Please use the following command to add the build folder to the python path of the system
+```
+export PYTHONPATH=/path/to/folder/DRL_graph_exploration/build:$PYTHONPATH
+```
 ## Issues
 There is an unsolved memory leak issue in the C++ code. So we use the python subprocess module to run the simulation training. The data in the process will be saved and reloaded every 10000 iterations.
 
