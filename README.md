@@ -13,7 +13,7 @@ This repository contains code for robot exploration under uncertainty that uses 
 - Python 3
 - [PyTorch](https://pytorch.org/)
 - [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/#)
-- [gtsam](https://gtsam.org/) (Georgia Tech Smoothing and Mapping library)
+- [gtsam](http://www.borg.cc.gatech.edu/sites/edu.borg/files/downloads/gtsam.pdf) (Georgia Tech Smoothing and Mapping library)
   ```
   git clone -b emex --single-branch https://bitbucket.com/jinkunw/gtsam
   cd gtsam
